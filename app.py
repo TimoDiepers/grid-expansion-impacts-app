@@ -64,18 +64,36 @@ with st.container(border=True):
             st.write("Data preview:", df.head())
 
     st.markdown("### Calculation Setup")
+    
+    impact_category_units = {
+        "Climate Change": "kg CO₂-eq",
+        "Acidification": "mol H⁺-eq",
+        "Ecotoxicity: Freshwater": "CTUe",
+        "Energy Resources: Non-Renewable": "MJ",
+        "Eutrophication: Freshwater": "kg P-eq",
+        "Eutrophication: Marine": "kg N-eq",
+        "Eutrophication: Terrestrial": "mol N-eq",
+        "Human Toxicity: Carcinogenic": "CTUh",
+        "Human Toxicity: Non-Carcinogenic": "CTUh",
+        "Ionising Radiation: Human Health": "kBq U235-eq",
+        "Land Use": "-",
+        "Material Resources: Metals/Minerals": "kg Sb-eq",
+        "Ozone Depletion": "kg CFC-11-eq",
+        "Particulate Matter Formation": "[-]",
+        "Photochemical Oxidant Formation: Human Health": "kg NMVOC-eq",
+        "Water Use": "m³"
+    }
+    
     setup_col1, setup_col2 = st.columns([1, 1])
     with setup_col1:
         impact_category = st.selectbox(
             "Impact Category",
-            options=["Climate Change", "Land Use", "Ecotoxicity", "Resource Use"],
-            index=0
+            options=impact_category_units.keys(),
         )
     with setup_col2:
         scenario = st.selectbox(
             "Scenario",
             options=["1.5 °C", "2 °C", "3.5 °C"],
-            index=0
         )
     
     calculated_df = st.session_state.calculated_df
@@ -147,7 +165,7 @@ if calculated_df is not None:
             .mark_bar()
             .encode(
                 x=alt.X("year:O", title=None),
-                y=alt.Y("CO2:Q", title="Climate Change Impact (kg CO₂-eq)"),
+                y=alt.Y("CO2:Q", title=f"{impact_category} Impact ({impact_category_units[impact_category]})"),
                 color=alt.Color(
                     "component:N",
                     scale=alt.Scale(
