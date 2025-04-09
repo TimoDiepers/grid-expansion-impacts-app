@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
-st.title("Grid Expansion Plan Impact Calculator")
+st.title("Grid Expansion Impact Calculator")
 st.markdown(
     """
     This application allows you to define a grid expansion plan and calculate its environmental impact.
@@ -133,8 +133,8 @@ if calculated_df is not None:
             alt.Chart(df_long)
             .mark_bar()
             .encode(
-                x=alt.X("year:O", title="Year"),
-                y=alt.Y("CO2:Q", title="CO₂ Impact"),
+                x=alt.X("year:O", title=None),
+                y=alt.Y("CO2:Q", title="Climate Change Impact (kg CO₂-eq)"),
                 color=alt.Color(
                     "component:N",
                     scale=alt.Scale(
@@ -144,6 +144,7 @@ if calculated_df is not None:
                 tooltip=["year", "component", "CO2"],
             )
             .properties(height=600)
+            .configure_axisX(labelAngle=0)
             .configure_legend(orient="bottom", columns=3, labelLimit=200)
         )
         st.altair_chart(chart, use_container_width=True)
