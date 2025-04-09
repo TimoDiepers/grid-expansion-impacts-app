@@ -14,8 +14,8 @@ st.markdown(
 if "calculated_df" not in st.session_state:
     st.session_state.calculated_df = None
 
-with st.container():
-    st.markdown("### Define grid expansion plan")
+with st.container(border=True):
+    st.markdown("### Expansion Plan Definition")
     
     # Dummy CSV data as default input
     dummy_csv = """
@@ -63,6 +63,22 @@ with st.container():
             df = pd.read_csv(uploaded_file)
             st.write("Data preview:", df.head())
 
+    st.markdown("### Calculation Setup")
+    setup_col1, setup_col2 = st.columns([1, 1])
+    with setup_col1:
+        impact_category = st.selectbox(
+            "Impact Category",
+            options=["Climate Change", "Land Use", "Ecotoxicity", "Resource Use"],
+            index=0
+        )
+    with setup_col2:
+        scenario = st.selectbox(
+            "Scenario",
+            options=["1.5 °C", "2 °C", "3.5 °C"],
+            index=0
+        )
+    
+    calculated_df = st.session_state.calculated_df
     # Define carbon multipliers (tons CO₂ per unit)
     co2_factors = {
         ("cable", "underground"): 3.12,
@@ -77,10 +93,7 @@ with st.container():
         df["component_subtype"] = "unspecified"
         
     df["component"] = df["component_subtype"] + " " + df["component_type"]
-
-    calculated_df = st.session_state.calculated_df
-
-    if st.button("Calculate Impact", type="primary"):
+    if st.button("Calculate Impact", type="primary", use_container_width=True):
         st.toast("Calculating impacts...", icon="🧮")
         df["CO2"] = df.apply(
             lambda row: row["unit_count"]
@@ -92,10 +105,10 @@ with st.container():
         st.session_state.calculated_df = df
         calculated_df = df
         st.toast("Calculation complete!", icon="✅")
-
+            
 if calculated_df is not None:
-    with st.container():
-        st.markdown("### Environmental Impact")
+    with st.container(border=True):
+        st.markdown("### Results")
         
         default_colors = [
             "#00549F",
